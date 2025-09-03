@@ -1,33 +1,34 @@
 import { PROJECT_TITLE } from "~/lib/constants";
 
 export async function GET() {
-  const appUrl =
-    process.env.NEXT_PUBLIC_URL ||
-    `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  const appUrl = process.env.NEXT_PUBLIC_URL;
 
-  const config = {
-    accountAssociation: {
-      header:
-        "eyJmaWQiOjEzNTk2LCJ0eXBlIjoiY3VzdG9keSIsImtleSI6IjB4ODE3MzE4RDZmRkY2NkExOGQ4M0ExMzc2QTc2RjZlMzBCNDNjODg4OSJ9",
-      payload:
-        "eyJkb21haW4iOiJmYXJjYXN0ZXItbWluaWFwcC10ZW1wbGF0ZS52ZXJjZWwuYXBwIn0",
-      signature:
-        "MHg5ZjkyZTdkNjRmZTNhNTE4YTEzOTBmZTdlYzAwOWQzODUzZWM2N2RmOTZiYjg1MzAwOGRlZDExNjVmOGE5OGVlNDQyYmI0MDU3OTI0ZmEzOGE3N2NlYWRiYThiMTRiN2IzMTY5N2ZjYWVlZGM3MTE1YWNiMTFmYjc2Y2EzYTc0YzFj",
-    },
-    miniapp: {
-      version: "1",
-      name: PROJECT_TITLE,
-      iconUrl: `${appUrl}/icon.png`,
-      homeUrl: appUrl,
-      imageUrl: `${appUrl}/frames/hello/opengraph-image`,
-      ogImageUrl: `${appUrl}/frames/hello/opengraph-image`,
-      buttonTitle: "Open",
-      splashImageUrl: `${appUrl}/splash.png`,
-      splashBackgroundColor: "#f7f7f7",
-      webhookUrl: `${appUrl}/api/webhook`,
-      primaryCategory: "social",
-    },
+  if (!appUrl) {
+    return Response.json({ error: 'NEXT_PUBLIC_URL not configured' }, { status: 500 });
+  }
+
+  const accountAssociation = {
+    header: 'eyJmaWQiOjg2OTk5OSwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDc2ZDUwQjBFMTQ3OWE5QmEyYkQ5MzVGMUU5YTI3QzBjNjQ5QzhDMTIifQ',
+    payload: 'eyJkb21haW4iOiJuaWN3bi1iZXJsaW5pbmJsYWNrdGVzdGFwcC52ZXJjZWwuYXBwIn0',
+    signature: 'MHgxNWE2OGM2ZWJiNzAwMDc0YWIxOTI2YmQ0Mzk0OWE2MjI3MTg4NTVmMmM3NTI4NjkxMGZjZGFjZTg5YTg5ZmJjNTZjY2E5ZWMwZGZkYjBlNmU1ZGNmNGU3YzNmNzFkZWRkMzJkNDExYjRjMzZlMDk4MWZhNTMwNTVhMDdkYjhhNTFj'
   };
 
-  return Response.json(config);
+  const frame = {
+    version: "1",
+    name: PROJECT_TITLE,
+    iconUrl: `${appUrl}/icon.png`,
+    homeUrl: appUrl,
+    imageUrl: `${appUrl}/og.png`,
+    buttonTitle: "Open",
+    webhookUrl: `${appUrl}/api/webhook`,
+    splashImageUrl: `${appUrl}/splash.png`,
+    splashBackgroundColor: "#555555",
+    primaryCategory: "social",
+    tags: ["community", "resources", "berlin", "support", "help"]
+  };
+
+  return Response.json({
+    accountAssociation,
+    frame
+  });
 }
